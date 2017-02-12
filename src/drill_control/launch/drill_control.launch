@@ -1,0 +1,26 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find drill_control)/config/controller.yaml" command="load"/>
+
+  <!-- load the controllers -->
+
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/drillbot"
+    args="joint_state_controller
+      motor_effort_controller
+      drillbit_effort_controller
+      touch1_effort_controller
+      touch2_effort_controller
+      touch3_effort_controller"
+  />
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find drill_description)/urdf/drillbot.xacro'" />
+    <remap from="/joint_states" to="/drillbot/joint_states" />
+  </node>
+
+</launch>

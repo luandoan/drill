@@ -1,0 +1,8 @@
+prefix=/home/luan/drill/devel
+
+Name: detect
+Description: Description of detect
+Version: 0.0.0
+Cflags: -I/home/luan/drill/devel/include
+Libs: -L/home/luan/drill/devel/lib 
+Requires: cv_bridge image_transport roscpp sensor_msgs std_msgs message_runtime

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>drill_description</name>
+  <version>0.0.0</version>
+  <description>The drill_description package</description>
+
+  <maintainer email="luandoan263@gmail.com">luan</maintainer>
+  <author email="luandoan263@gmail.com">Luan Doan</author>
+  <license>TODO</license>
+
+
+  <!-- Url tags are optional, but mutiple are allowed, one per tag -->
+  <url type="website">http://github.com/luandoan/drill</url>
+  
+
+  
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

@@ -1,0 +1,2 @@
+depthsense_cam:detect:drill_control:drill_description:drill_gazebo
+-DCATKIN_DEVEL_PREFIX=/home/luan/drill/devel -DCMAKE_INSTALL_PREFIX=/home/luan/drill/install -G Unix Makefiles

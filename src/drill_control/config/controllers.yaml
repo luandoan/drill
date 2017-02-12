@@ -1,0 +1,10 @@
+controller_list:
+  - name: ""
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    joints:
+      - motor_joint
+      - drillbit_joint
+      - touch1_joint
+      - touch2_joint
+      - touch3_joint

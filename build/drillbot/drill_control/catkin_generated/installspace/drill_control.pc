@@ -1,0 +1,8 @@
+prefix=/home/luan/drill/install
+
+Name: drill_control
+Description: Description of drill_control
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/luan/drill/install/lib 
+Requires: 

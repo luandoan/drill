@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="drillbot_transmission" params="prefix">
+
+    <transmission name="${prefix}motor_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}motor_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}end_base_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  
+    <transmission name="${prefix}drillbit_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}drillbit_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}drillbit_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  
+    <transmission name="${prefix}touch1_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}touch1_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}touch1_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  
+    <transmission name="${prefix}touch2_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}touch2_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}touch2_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  
+    <transmission name="${prefix}touch3_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}touch3_joint">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}touch3_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+  </xacro:macro>
+
+</robot>

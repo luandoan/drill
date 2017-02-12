@@ -1,0 +1,8 @@
+prefix=/home/luan/drill/devel
+
+Name: drill_gazebo
+Description: Description of drill_gazebo
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/luan/drill/devel/lib 
+Requires: 

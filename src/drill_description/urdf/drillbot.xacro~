@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<robot name="drillbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+        
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <xacro:property name="baseLength" value="0.40"/>
+  <xacro:property name="baseRadius" value="0.15"/>
+  <xacro:property name="baseMass" value="1.5"/>
+
+  <xacro:property name="motorLength" value="0.17" />
+  <xacro:property name="motorRadius" value="0.08" />
+  <xacro:property name="motorMass" value="0.4" />
+
+  <xacro:property name="drillLength" value="0.10"/>
+  <xacro:property name="drillRadius" value="0.04"/>
+  <xacro:property name="drillMass" value="0.15"/>
+
+
+  <xacro:property name="touchLenght" value="0.25"/>
+  <xacro:property name="touchRadius" value="0.02"/>
+  <xacro:property name="touchMass" value="0.05"/>
+
+  <xacro:property name="cameraSize" value="0.025"/>
+  <xacro:property name="cameraMass" value="0.05"/>
+
+  <xacro:include filename="$(find mybot_description)/urdf/drillbot.gazebo" />
+  <xacro:include filename="$(find mybot_description)/urdf/materials.xacro" />
+  <xacro:include filename="$(find mybot_description)/urdf/macros.xacro" />
+
+  <!-- cylinder_inertial for components /-->
+  <xacro:macro name="cylinder_inertial" param="radius length mass *origin">
+   <inertial>
+     <mass value="${mass}" />
+     <insert_block name="origin" />
+     <inertial ixx="${0.0833333 * mass * (3 * radius * radius + length * length)}" ixy="0.0" ixz="0.0"
+ 	       iyy="${0.0833333 * mass * (3 * radius * radius + length * length)}" iyz="0.0"
+   	       izz="${0.5 * mass * radius * radius}" />
+   </inertial>
+  </xacro:macro>
+
+
+  <xacro:macro name="drillbot" params="prefix joint_limited">
+    
+    <!-- end_effector basement -->
+    <link name="${prefix}end_base_link" >
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/end_effector.dae" />
+	  </geometry>
+	  <material name="LightGrey">
+	    <color rgba="0.7 0.7 0.7 1.0"/>
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/end_effector.stl">
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="${baseRadius}" length="${baseLength}" mass="${baseMass}">
+	  <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+	</xacro:cylinder_inertial>
+    </link>
+
+<!-- joint's types: 	revolute - for rotating part with upder and lower limits
+			continous - for rotating part without limits
+			prismatic - for a sliding joint
+			fixed - for fixed part - not really a joint
+			floating - allow motion in all 6 degree of freedom
+			planar - allows motion in a plane perpendicular to the axis -->
+
+    <!-- motor and frame -->
+    <joint name="${prefix}motor_joint" type="prismatic">
+	<parent link="${prefix}end_base_link" />
+ 	<child link="${prefix}motor_link" />
+	<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<axis xyz="0 0 1" />
+	<xacro:unless value="${joint_limited}">
+          <limit lower="${-0.02}" upper="${0.08}" effort="150.0" velocity="1.0"/>
+        </xacro:unless>
+        <xacro:if value="${joint_limited}">
+          <limit lower="${-0.015}" upper="${0.075}" effort="150.0" velocity="1.0"/>
+        </xacro:if>
+	<dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+    <link name="${prefix}motor_link">
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/motor.dae" />
+	  </geometry>
+	  <material name="LightBlue">
+	    <color rgba="0.0 0.0 0.8 1.0" />
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/motor.stl" />
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="${motorRadius}" length="${motorLength}" mass="${motorMass}">
+	  <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+	</xacro:cylinder_inertial>
+    </link>
+
+   <!-- chunk + drillbit -->
+    <joint name="${prefix}drillbit_joint" type="continous">
+	<parent link="${prefix}motor_link" />
+	<child link="${prefix}drillbit_link" />
+	<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<axis xyz="0 1 0"/>
+	<velocity="3.15" dynamic="0.0" friction="0.0" />
+    </joint>
+
+    <link name="${prefix}drillbit_link" >
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/drillbit.dae" />
+	  </geometry>
+	  <material name="orange">
+	    <color rgba="0.0 0.8 0.0 1.0" />
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/drillbit.stl" />
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="${drillRadius}" length="${drillLenght}" mass="${drillMass}">
+	  <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+	<xacro:cylinder_inertial>
+    </link>
+
+  <!-- touching pronges -->
+    <joint name="${prefix}touch1_joint" type="prismatic">
+	<parent link="${prefix}end_base_link" />
+	<child link="${prefix}touch1_link" />
+	<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<axis xyz="0 0 1"/>
+	<xacro:unless value="${joint_limited}">
+          <limit lower="${-0.02}" upper="${0.07}" effort="150.0" velocity="1.0"/>
+        </xacro:unless>
+        <xacro:if value="${joint_limited}">
+          <limit lower="${-0.015}" upper="${0.065}" effort="150.0" velocity="1.0"/>
+        </xacro:if>
+	<dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+    <link name="${prefix}touch1_link">
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.dae" />
+	  </geometry>
+	  <material name="black">
+	    <color rgba="0.0 0.0 0.0 1.0" />
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.stl" />
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="touchRadius" length="touchLength" mass="touchMass">
+	  <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+	</xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}touch2_joint" type="prismatic">
+	<parent link="${prefix}end_base_link" />
+	<child link="${prefix}touch1_link" />
+	<origin xyz="0.05 0.05 0.0" rpy="0.0 0.0 0.0" />
+	<axis xyz="0 0 1"/>
+	<xacro:unless value="${joint_limited}">
+          <limit lower="${-0.02}" upper="${0.07}" effort="150.0" velocity="1.0"/>
+        </xacro:unless>
+        <xacro:if value="${joint_limited}">
+          <limit lower="${-0.015}" upper="${0.065}" effort="150.0" velocity="1.0"/>
+        </xacro:if>
+	<dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+    <link name="${prefix}touch2_link">
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.dae" />
+	  </geometry>
+	  <material name="black">
+	    <color rgba="0.0 0.0 0.0 1.0" />
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.stl" />
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="touchRadius" length="touchLength" mass="touchMass">
+	  <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+	</xacro:cylinder_inertial>
+    </link>
+
+    <joint name="${prefix}touch3_joint" type="prismatic">
+	<parent link="${prefix}end_base_link" />
+	<child link="${prefix}touch1_link" />
+	<origin xyz="-0.05 -0.05 0.0" rpy="0.0 0.0 0.0" />
+	<axis xyz="0 0 1"/>
+	<xacro:unless value="${joint_limited}">
+          <limit lower="${-0.02}" upper="${0.07}" effort="150.0" velocity="1.0"/>
+        </xacro:unless>
+        <xacro:if value="${joint_limited}">
+          <limit lower="${-0.015}" upper="${0.065}" effort="150.0" velocity="1.0"/>
+        </xacro:if>
+	<dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+    <link name="${prefix}touch3_link">
+	<visual>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.dae" />
+	  </geometry>
+	  <material name="black">
+	    <color rgba="0.0 0.0 0.0 1.0" />
+	  </material>
+	</visual>
+	<collision>
+	  <geometry>
+	    <mesh filename="package://drill_description/meshes/touch.stl" />
+	  </geometry>
+	</collision>
+	<xacro:cylinder_inertial radius="touchRadius" length="touchLength" mass="touchMass">
+	  <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+	</xacro:cylinder_inertial>
+    </link>
+
+  </xacro:macro>
+</robot>
+
+
+
+
