@@ -112,8 +112,10 @@ class circle_detect:
 		cv2.waitKey(3)
 
 		# process depth image
-		#depth_data = self.depth_img(data)
-		#cv_depth = self.bridge.imgmsg_to_cv2(depth_data, "32FC1")
+		depth_data = self.depth_img(data)
+		print depth_data
+		#cv_depth = self.bridge.imgmsg_to_cv2(data, "bgr8")
+		#cv_depth = self.bridge.imgmsg_to_cv2(depth_data, "bgr8")
 		#cv2.imshow("Depth Image", cv_depth)		
 
 
