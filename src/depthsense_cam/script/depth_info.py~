@@ -4,7 +4,7 @@
 	get distance from some interest points for getting orientation
 	and adjusting values 
 	Created by Luan Doan
-	CMS Lab, VTech June 2016
+	CMS Lab, VTech Feb 2017
 """
 
 import rospy
@@ -38,14 +38,20 @@ class depth_distance:
 			# convert image to matrix
 			depth_matrix = np.asarray(cv_depth)
 			sz = np.shape(depth_matrix)
-			rospy.loginfo("Size of depth image: ,%s", sz)
+			
+			#rospy.loginfo("Size of depth image: ,%s", sz)
 
-			distance = depth_matrix.at(160,240)
+			#distance = depth_matrix(160,240,3)
+			dt = cv_depth[160,120]			
+			print dt #
+			dist = dt[0]
+			print "Distance: ", dist
+			
 
 
 
 			# put text on depth image
-			cv2.putText(cv_depth, 'Distance from the center of image is: ' + str(sz[0]) + "x" + str(sz[1]),  (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.2, (255,0,0))
+			cv2.putText(cv_depth, 'Distance from the center of image is: ', str(dist),  (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.2, (255,0,0))
 
 			cv2.imshow("Depth Image", cv_depth)
 			cv2.waitKey(3)
