@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""	circle_detect using Depth Sense camera
+"""	circle_detect using Asus XTion camera
 	based on HoughCircles python ROS
 	Detect all possible circles and point out the interested one, which closest
 	to center of image frame or any other interest points.
@@ -26,11 +26,11 @@ from cv_bridge import CvBridge, CvBridgeError
 
 class circle_detect:
 	def __init__(self):
-		self.image_pub = rospy.Publisher("circle_detection", Image, queue_size = 10)
+		self.image_pub = rospy.Publisher("/circle_detection", Image, queue_size = 10)
 		self.bridge = CvBridge()
-		self.image_sub = rospy.Subscriber("/rgb_image", Image, self.callback)
-		self.depth_sub = rospy.Subscriber("/depth_image", Image, self.depth_img)
-		self.point_pub = rospy.Publisher("point_support", Floats, queue_size = 5)
+		self.image_sub = rospy.Subscriber("/camera/rgb/image_raw", Image, self.callback)
+		self.depth_sub = rospy.Subscriber("/camera/depth/image_raw", Image, self.depth_img)
+		self.point_pub = rospy.Publisher("/point_support", Floats, queue_size = 5)
 
 	def callback(self, data):
 		try:
